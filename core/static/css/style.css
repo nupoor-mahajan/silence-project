@@ -1,0 +1,282 @@
+:root {
+  /* Modern Civic Palette */
+  --primary: #1F3A5F;
+  --secondary: #4C6A85;
+  --accent: #D97742;
+  --bg: #F4F7FB;
+  --surface: rgba(255, 255, 255, 0.85); /* Glass effect base */
+  --text: #141414;
+  --muted: rgba(30, 40, 60, 0.65);
+  --olive: #7A8F6B;
+  --border: rgba(20, 30, 40, 0.12);
+
+  /* Dimensions & Effects */
+  --radius-lg: 18px;
+  --radius-md: 12px;
+  --shadow-soft: 0 6px 18px rgba(0, 0, 0, 0.06);
+  --shadow-hover: 0 14px 40px rgba(0, 0, 0, 0.12);
+  --transition: 0.25s ease;
+}
+
+body {
+  background: 
+    radial-gradient(circle at top left, rgba(217, 119, 66, 0.08), transparent 60%),
+    radial-gradient(circle at bottom right, rgba(31, 58, 95, 0.10), transparent 70%),
+    var(--bg);
+  color: var(--text);
+  font-family: "Inter", sans-serif;
+  margin: 0;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* --- Typography --- */
+h1 {
+  font-family: 'Merriweather', serif;
+  font-size: clamp(2rem, 3vw, 2.8rem);
+  letter-spacing: -0.5px;
+  color: var(--primary);
+  margin-bottom: 0.5rem;
+}
+
+h2 {
+  font-family: 'Merriweather', serif;
+  font-size: 1.5rem;
+  margin-top: 0;
+  margin-bottom: 12px;
+  color: var(--primary);
+}
+
+.subtitle {
+  color: var(--muted);
+  font-size: 1rem;
+  max-width: 60ch;
+}
+
+.accent-text {
+    color: var(--accent);
+    font-weight: 500;
+}
+
+.mono {
+    font-family: 'JetBrains Mono', monospace;
+}
+
+/* --- Layout Containers --- */
+.container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 40px 20px;
+}
+
+.civic-header {
+    padding-bottom: 40px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 40px;
+}
+
+.grid-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+  align-items: start;
+}
+
+/* Mobile Stack Fix */
+@media (max-width: 900px) {
+  .grid-layout { grid-template-columns: 1fr; }
+  .map-panel, .stats-panel { grid-column: span 1; }
+}
+
+/* Make Wide Panels Span Full Row */
+.map-panel, .stats-panel {
+  grid-column: 1 / -1;
+}
+
+/* --- Glassmorphic Cards --- */
+.card {
+  background: var(--surface);
+  backdrop-filter: blur(14px); /* The frosted glass effect */
+  padding: 28px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-soft);
+  transition: transform var(--transition), box-shadow var(--transition);
+  width: 100%;
+  box-sizing: border-box; /* Prevents padding from breaking width */
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-hover);
+}
+
+/* Fix for charts overflowing */
+.card img {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--radius-md);
+}
+
+/* --- Forms & Inputs --- */
+.civic-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.form-group {
+    margin-bottom: 12px;
+}
+
+input[type="file"],
+input[type="number"] {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.75);
+  font-size: 0.95rem;
+  transition: var(--transition);
+  box-sizing: border-box; /* Keeps inputs inside card */
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(31, 58, 95, 0.15);
+}
+
+.btn-civic {
+  background: linear-gradient(135deg, var(--primary), #162a45);
+  color: white;
+  border: none;
+  padding: 13px 22px;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(31, 58, 95, 0.25);
+  transition: var(--transition);
+  width: 100%;
+}
+
+.btn-civic:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 12px 26px rgba(31, 58, 95, 0.35);
+}
+
+/* --- Stats Grid (Restored) --- */
+.stat-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    background: rgba(255,255,255,0.5);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+}
+
+.stat-item .label {
+  font-size: 0.75rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.stat-item .value {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--primary);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.highlight {
+    color: var(--accent) !important;
+}
+
+.disclaimer {
+    margin-top: 20px;
+    font-size: 0.85rem;
+    color: var(--muted);
+    padding: 12px;
+    background: rgba(122, 143, 107, 0.1); /* Olive tint */
+    border-radius: var(--radius-md);
+    border-left: 3px solid var(--olive);
+}
+
+/* --- Console Panel (Restored Layout) --- */
+.console-output {
+  background: rgba(15, 20, 30, 0.04);
+  border-radius: var(--radius-md);
+  padding: 18px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.88rem;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  overflow-x: auto;
+}
+
+.console-header {
+    display: grid;
+    grid-template-columns: 2fr 2fr 1fr 2fr; /* Columns alignment */
+    color: var(--secondary);
+    font-weight: bold;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+    margin-bottom: 8px;
+    font-size: 0.75rem;
+}
+
+.console-row {
+    display: grid;
+    grid-template-columns: 2fr 2fr 1fr 2fr; /* Matches header */
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    align-items: center;
+}
+
+.console-row:last-child {
+    border-bottom: none;
+}
+
+.warning {
+    color: var(--accent);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* --- Animations --- */
+.fade-in {
+  animation: fadeIn 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.pulse-marker::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background-color: var(--accent);
+    border-radius: 50%;
+    margin-right: 8px;
+    box-shadow: 0 0 0 0 rgba(217, 119, 66, 0.7);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(217, 119, 66, 0.4); }
+    70% { box-shadow: 0 0 0 6px rgba(217, 119, 66, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(217, 119, 66, 0); }
+}
