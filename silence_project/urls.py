@@ -16,9 +16,19 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from core.views import dashboard_view
+from core import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', dashboard_view, name='dashboard'),
+    path('', views.index_view, name='index'),          # Intro Page
+    path('about/', views.about_view, name='about'),    # About Page
+    path('working/', views.working_view, name='working'), # Working Page
+    path('upload/', views.upload_view, name='upload'), # Upload Page (The logic lives here)
+    path('results/', views.results_view, name='results'), # Results Page
+
+    # --- ADD THIS NEW PATH ---
+    path('guide/', views.guide_view, name='guide'),
+    
+    path('upload/', views.upload_view, name='upload'),
+    # ...
 ]

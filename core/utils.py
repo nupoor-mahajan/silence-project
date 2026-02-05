@@ -18,18 +18,18 @@ def process_data(file_obj, threshold_ratio):
     median_density = df['density'].median()
     
     # 4. AI/ML: Statistical Anomaly Detection (Z-Score)
-    # If density is significantly below mean, it's a "Silence" anomaly
-    df['density_z'] = (df['density'] - mean_density) / df['density'].std()
+    if df['density'].std() == 0:
+        df['density_z'] = 0
+    else:
+        df['density_z'] = (df['density'] - mean_density) / df['density'].std()
     
     # 5. Flagging Rules
-    # Logic: If density is less than X% of the average density, flag it.
-    cutoff = mean_density * threshold_ratio
+    cutoff = mean_density * float(threshold_ratio)
     df['is_silent'] = df['density'] < cutoff
     
     # 6. AI: Early Warning & Fear Indicator
-    # If complaints are low BUT historical average was high -> High deviation -> Fear/Suppression
     df['trend_gap'] = df['history_avg'] - df['complaints']
-    # "Fear Score": Normalized indication of dropping engagement
+    
     df['fear_score'] = np.where(
         (df['is_silent']) & (df['trend_gap'] > 0), 
         (df['trend_gap'] / df['population']) * 100, 
@@ -39,41 +39,40 @@ def process_data(file_obj, threshold_ratio):
     # 7. Visualization: The Silence Map (Scatter Plot)
     plt.figure(figsize=(10, 6), facecolor='#F6F8FA')
     ax = plt.gca()
-    ax.set_facecolor('#F6F8FA')
+    ax.set_facecolor='#F6F8FA'
     
-    # Plot normal regions
     normal = df[~df['is_silent']]
-    plt.scatter(normal['population'], normal['complaints'], 
-                color='#4C6A85', alpha=0.6, s=50, label='Standard Reporting')
+    if not normal.empty:
+        plt.scatter(normal['population'], normal['complaints'], 
+                    color='#4C6A85', alpha=0.6, s=50, label='Standard Reporting')
     
-    # Plot Silent/Flagged regions (Pulse effect in CSS, here visual distinction)
     silent = df[df['is_silent']]
-    plt.scatter(silent['population'], silent['complaints'], 
-                color='#D97742', s=100, edgecolors='#1F3A5F', linewidth=1.5, label='Flagged Silence')
+    if not silent.empty:
+        plt.scatter(silent['population'], silent['complaints'], 
+                    color='#D97742', s=100, edgecolors='#1F3A5F', linewidth=1.5, label='Flagged Silence')
 
     plt.title('Silence Map: Population vs. Reported Issues', 
-              fontname='Merriweather', color='#1F3A5F', pad=20)
-    plt.xlabel('Population', fontname='Inter')
-    plt.ylabel('Complaint Volume', fontname='Inter')
+              color='#1F3A5F', pad=20)
+    plt.xlabel('Population')
+    plt.ylabel('Complaint Volume')
     plt.grid(True, linestyle='--', alpha=0.3, color='#4C6A85')
     plt.legend(frameon=False)
     
-    # Save to base64
     buf = io.BytesIO()
     plt.savefig(buf, format='png', bbox_inches='tight')
     plt.close()
     chart_data = base64.b64encode(buf.getvalue()).decode('utf-8')
     
     # 8. Ranking Pipeline
-    # Sort silent regions by "severity" (lowest density first)
     ranked_silent = df[df['is_silent']].sort_values(by='density', ascending=True)
     
+    # 9. Return Data
     return {
         'chart': chart_data,
         'stats': {
-            'mean': round(mean_density, 2),
-            'median': round(median_density, 2),
-            'flagged_count': len(silent)
+            'mean': float(mean_density),
+            'median': float(median_density),
+            'flagged_count': int(len(silent))
         },
         'ranked_regions': ranked_silent.to_dict('records'),
         'full_data': df.to_dict('records')
